@@ -46,6 +46,11 @@
 ## Security Considerations:
 
 - Implement authentication for the web interface to prevent unauthorized access.
+    - implement HTTPS (lets encrypt for free ssl/tls certs)
+    - user authentication via flask-login and flask-security
+    - password and hasing
+    - 2fa?
+    - access control
 - Consider using HTTPS to encrypt communication with the Raspberry Pi.
 
 # Next up
