@@ -1,11 +1,6 @@
 {
     "door": {
-        "status": "CLOSED",
-        "auto_control": true,
-        "open_time": "07:00",
-        "close_time": "20:00"
-    },
-    "manual_override": {
-        "enabled": false
+        "open_time": "05:00",
+        "close_time": "10:00"
     }
 }

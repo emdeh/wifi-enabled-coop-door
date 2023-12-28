@@ -24,23 +24,30 @@
     <!-- Dynamic content will be loaded here -->
   </section>
   <section id="controls">
-    <h2>Door Control</h2>
+    <h2>Door Schedule</h2>
     <p>Chicken coop <span id="doorStatus">CLOSED</span></p>
-    <button onclick="toggleDoor('open')">Open</button>
-    <button onclick="toggleDoor('close')">Close</button>
     <div>
       <label for="doorTime">Open door at:</label>
-      <input type="time" id="doorTime">
+      <input type="time" id="openTime">
+      <br>
+      <br>
       <label for="closeTime">Close door at:</label>
       <input type="time" id="closeTime">
+      <br>
       <button onclick="updateTimerSettings()">Set Timer</button>
+      <br>
     </div>
+    <br>
+    <h2>Schedule Override</h2>
     <div>
       <label class="switch">
       <input type="checkbox" id="overrideSchedule">
       <span class="slider"></span>
       </label>
       <span id="overrideStatus">Override schedule</span>
+      <br>
+      <button id="openButton" onclick="toggleDoor('open')">Open</button>
+      <button id="closeButton" onclick="toggleDoor('close')">Close</button>
     </div>
   </section>
 </div>

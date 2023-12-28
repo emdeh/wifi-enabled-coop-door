@@ -93,44 +93,64 @@ def control_door():
     data = request.json
     action = data.get('action')
     
+    # Check if manual_override is enabled before proceeding
+    if not manual_override:
+        return jsonify({'status': 'Override not enabled, action not allowed'}), 403
+    
     if action == 'open':
         open_door()
-        response = {'status': 'OPENED'}
+        response = {'status': 'Door OPENED'}
     elif action == 'close':
         close_door()
-        response = {'status': 'CLOSED'}
-    elif action == 'override':
-        manual_override = not manual_override
-        response = {'status': 'Manual override toggled', 'override': manual_override}
+        response = {'status': 'Door CLOSED'}
     else:
         response = {'status': 'Invalid action'}
 
     return jsonify(response)
 
+# Route for handling manual override toggle
 @app.route('/override', methods=['POST'])
-def override_schedule():
+def toggle_override():
     global manual_override
     data = request.json
     manual_override = data.get('override', False)
-    # Handle the manual override logic here...
-    return jsonify({'status': 'Override status updated'})
+    
+    # Perform any needed actions when override status changes
+    if manual_override:
+        # Logic to cancel scheduled jobs can go here
+        schedule.clear()
+    else:
+        # Logic to set up scheduled jobs again can go here
+        # Setup the initial schedule from the config file
+        config = load_config()
+        schedule.every().day.at(config['door']['open_time']).do(scheduled_open)
+        schedule.every().day.at(config['door']['close_time']).do(scheduled_close)
+    
+    response = {
+        'status': 'Override status updated',
+        'override': manual_override
+    }
+    return jsonify(response)
 
-# Route for handling read and writing settings.
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == 'POST':
-        global manual_override
         new_settings = request.json
+        print("Received new settings:", new_settings)  # Debugging print
         save_config(new_settings)
+
         # Update the schedule based on new settings
         schedule.clear()
         if not manual_override:
             schedule.every().day.at(new_settings['door']['open_time']).do(scheduled_open)
             schedule.every().day.at(new_settings['door']['close_time']).do(scheduled_close)
+
         return jsonify({'status': 'Settings updated'})
+
     elif request.method == 'GET':
         current_settings = load_config()
         return jsonify(current_settings)
+
 
 if __name__ == '__main__':
     # Setup the initial schedule from the config file
