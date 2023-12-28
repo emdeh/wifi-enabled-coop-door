@@ -63,8 +63,8 @@ function getCurrentSettings() {
     .then(data => {
         document.getElementById('openTime').value = data.door.open_time;
         document.getElementById('closeTime').value = data.door.close_time;
-        const overrideSwitch = document.getElementById('manualControl');
-        overrideSwitch.checked = data.override;
+        const manualSwitch = document.getElementById('manualControl');
+        manualSwitch.checked = data.override;
         toggleOverride();
     })
     .catch(error => console.error('Error:', error));

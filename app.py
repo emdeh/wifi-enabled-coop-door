@@ -33,9 +33,6 @@ if GPIO_AVAILABLE:
     GPIO.setmode(GPIO.BCM)  # Use Broadcom pin numbering
     GPIO.setup(door_pin, GPIO.OUT, initial=GPIO.HIGH)
 
-# Global variable for manual override
-manual_override = False
-
 # Load and save configuration functions
 def load_config():
     with open('configSettings.json', 'r') as file:
@@ -63,11 +60,9 @@ def close_door():
 
 # Scheduled job functions
 def scheduled_open():
-    if not manual_override:
         open_door()
 
 def scheduled_close():
-    if not manual_override:
         close_door()
 
 # Initialize the scheduler
@@ -112,9 +107,8 @@ def settings():
 
         # Update the schedule based on new settings
         schedule.clear()
-        if not manual_override:
-            schedule.every().day.at(new_settings['door']['open_time']).do(scheduled_open)
-            schedule.every().day.at(new_settings['door']['close_time']).do(scheduled_close)
+        schedule.every().day.at(new_settings['door']['open_time']).do(scheduled_open)
+        schedule.every().day.at(new_settings['door']['close_time']).do(scheduled_close)
 
         return jsonify({'status': 'Settings updated'})
 
