@@ -1,16 +1,37 @@
 from flask import Flask, request, jsonify, render_template
-import RPi.GPIO as GPIO
 import json
 import schedule
 import time
 from threading import Thread
+import os
+
+def is_running_on_pi():
+    """check if the app is running on a raspberry pi."""
+    try:
+        with open('/proc/cpuinfo', 'r') as cpuinfo:
+            for line in cpuinfo:
+                if line.startswith('Hardware') and 'BCM' in line:
+                    return True
+    except IOError:
+        # /proc/cpuinfo does not exist, not running on a Pi
+        return False
+    
+# Conditionally import the GPIO library
+if is_running_on_pi():
+    import RPi.GPIO as GPIO
+    GPIO_AVAILABLE = True
+else:
+    print("RPI.GPIO module not loaded. GPIO functionality will not be available.")
+    GPIO_AVAILABLE = False
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # GPIO setup
 door_pin = 23  # Change to your GPIO pin number
-GPIO.setmode(GPIO.BCM)  # Use Broadcom pin numbering
-GPIO.setup(door_pin, GPIO.OUT, initial=GPIO.HIGH)
+
+if GPIO_AVAILABLE:
+    GPIO.setmode(GPIO.BCM)  # Use Broadcom pin numbering
+    GPIO.setup(door_pin, GPIO.OUT, initial=GPIO.HIGH)
 
 # Global variable for manual override
 manual_override = False
@@ -26,13 +47,19 @@ def save_config(config):
 
 # Function to open the door
 def open_door():
-    GPIO.output(door_pin, GPIO.LOW)  # Open the door
-    print("Door opened")
+    if GPIO_AVAILABLE:
+        GPIO.output(door_pin, GPIO.LOW)  # Open the door
+        print("Door opened")
+    else:
+        print("Simulated Door Opened (No GPIO operation)")
 
 # Function to close the door
 def close_door():
-    GPIO.output(door_pin, GPIO.HIGH)  # Close the door
-    print("Door closed")
+    if GPIO_AVAILABLE:
+        GPIO.output(door_pin, GPIO.HIGH)  # Close the door
+        print("Door closed")
+    else:
+        print("Simulated Door Closed (No GPIO operation)")
 
 # Scheduled job functions
 def scheduled_open():
