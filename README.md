@@ -2,8 +2,8 @@
 
 ## Setup the Raspberry Pi:
 
-- Install the operating system (Raspbian) and set up the network so that the Raspberry Pi is accessible over your network.
-- Enable SSH for remote access to the Raspberry Pi terminal.
+- Install the operating system (Raspbian) and set up the network so that the Raspberry Pi is accessible over your network. *Done*
+- Enable SSH for remote access to the Raspberry Pi terminal. *Done*
 
 ## Create the Web Interface:
 
