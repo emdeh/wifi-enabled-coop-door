@@ -7,36 +7,35 @@
 
 ## Create the Web Interface:
 
-- Use a web framework like Flask or Django to create a web server that will run on the Raspberry Pi and serve your dashboard.
-- Design the front-end to match the layout of your screenshot. You can use HTML, CSS, and JavaScript to build the user interface. For a dynamic interface, consider frameworks like React or Vue.js, or templating engines provided by your chosen Python web framework.
+- Use a web framework like Flask or Django to create a web server that will run on the Raspberry Pi and serve your dashboard. *Partially Done*
 
 ## Interface with the GPIO Pins:
 
-- Write Python scripts to interface with the GPIO pins that control the chicken coop door. You'll use the RPi.GPIO library for this purpose.
-- Create functions for opening and closing the door, and for setting and checking the door's current status.
+- Write Python scripts to interface with the GPIO pins that control the chicken coop door. You'll use the RPi.GPIO library for this purpose. *Partially Done*
+- Create functions for opening and closing the door, and for setting and checking the door's current status. *Partially Done*
 
 
 ## Remote Control Functionality:
 
-- Implement AJAX in your web interface to send commands to your Raspberry Pi server without needing to refresh the page.
-- Define routes in your Flask or Django app that will listen for these commands and call the appropriate Python functions to control the door.
+- Implement AJAX in your web interface to send commands to your Raspberry Pi server without needing to refresh the page. 
+- Define routes in your Flask or Django app that will listen for these commands and call the appropriate Python functions to control the door. *Partially Done*
 
 ## Timer Functionality:
 
-- Use a job scheduler like cron or a Python library like schedule to manage the door's opening and closing times.
-- Provide the functionality in your web interface to update these schedules.
+- Use a job scheduler like cron or a Python library like schedule to manage the door's opening and closing times. *Done*
+- Provide the functionality in your web interface to update these schedules. *Done*
 
 
 ## Manual Override:
 
-- Ensure your web interface can send a manual override command that is prioritized over scheduled actions.
-- Implement logic in your Python code that can handle this override.
+- Ensure your web interface can send a manual override command that is prioritized over scheduled actions. *Partially Done*
+- Implement logic in your Python code that can handle this override. *Partially Done*
 
 
 ## Configuration Settings:
 
-- Use a JSON file or a database to store user preferences and settings, like the timer schedule.
-- Make sure your web interface can update and retrieve these settings.
+- Use a JSON file or a database to store user preferences and settings, like the timer schedule. *Partially Done*
+- Make sure your web interface can update and retrieve these settings. *Done*
 
 ## Testing:
 
@@ -48,3 +47,7 @@
 
 - Implement authentication for the web interface to prevent unauthorized access.
 - Consider using HTTPS to encrypt communication with the Raspberry Pi.
+
+# Next up
+
+- Need to fix triggers to when scheduled time passes, the door open functions are called.
