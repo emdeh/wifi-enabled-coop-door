@@ -49,7 +49,7 @@ def save_config(config):
 def open_door():
     if GPIO_AVAILABLE:
         GPIO.output(door_pin, GPIO.LOW)  # Open the door
-        print("Door cpen")
+        print("Door open")
     else:
         print("Simulated Door Opened (No GPIO operation)")
 
@@ -99,10 +99,10 @@ def control_door():
     
     if action == 'open':
         open_door()
-        response = {'status': 'Door OPENED'}
+        response = {'status': 'OPENED'}
     elif action == 'close':
         close_door()
-        response = {'status': 'Door CLOSED'}
+        response = {'status': 'CLOSED'}
     else:
         response = {'status': 'Invalid action'}
 
@@ -115,16 +115,15 @@ def toggle_override():
     data = request.json
     manual_override = data.get('override', False)
     
-    # Perform any needed actions when override status changes
+    # Logic to cancel scheduled jobs if manual_override is enabled
     if manual_override:
-        # Logic to cancel scheduled jobs can go here
         schedule.clear()
-    else:
-        # Logic to set up scheduled jobs again can go here
-        # Setup the initial schedule from the config file
-        config = load_config()
-        schedule.every().day.at(config['door']['open_time']).do(scheduled_open)
-        schedule.every().day.at(config['door']['close_time']).do(scheduled_close)
+    
+    # Logic to set up scheduled jobs again
+    # Setup the initial schedule from the config file
+    config = load_config()
+    schedule.every().day.at(config['door']['open_time']).do(scheduled_open)
+    schedule.every().day.at(config['door']['close_time']).do(scheduled_close)
     
     response = {
         'status': 'Override status updated',

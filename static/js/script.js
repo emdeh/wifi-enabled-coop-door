@@ -72,3 +72,12 @@ function getCurrentSettings() {
 
 // Event listener for DOM content loaded
 document.addEventListener('DOMContentLoaded', getCurrentSettings);
+
+// Get a reference to the checkbox element by its ID
+const overrideCheckbox = document.getElementById('overrideSchedule');
+
+// Add an event listener to listen for changes in the checkbox's state
+overrideCheckbox.addEventListener('change', function () {
+    toggleOverride(); // Call the toggleOverride() function when the checkbox is changed
+});
+
