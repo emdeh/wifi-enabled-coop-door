@@ -10,9 +10,21 @@ function toggleDoor(action) {
     .then(response => response.json())
     .then(data => {
         // Update the door status on the web page
-        document.getElementById('doorStatus').innerText = data.status;
+        document.getElementById('doorStatus').innerText = data.status.replace('Door ', '');
+        // Update the override status message based on the door state
+        updateOverrideMessage();
     })
     .catch(error => console.error('Error:', error));
+}
+
+// Function to update the override status message
+function updateOverrideMessage() {
+    const overrideSwitch = document.getElementById('overrideSchedule');
+    const doorStatus = document.getElementById('doorStatus').innerText;
+    const actionWord = doorStatus === 'OPENED' ? 'close' : 'open';
+    document.getElementById('overrideStatus').innerText = overrideSwitch.checked ? 
+        `Auto schedule overridden. Door will not ${actionWord}` : 
+        'Override schedule';
 }
 
 // Function to update the timer settings
@@ -39,6 +51,24 @@ function updateTimerSettings() {
     .catch(error => console.error('Error:', error));
 }
 
+// Function to handle manual override switch
+function toggleOverride() {
+    const isChecked = document.getElementById('overrideSchedule').checked;
+    fetch('/override', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ override: isChecked })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update the override status message
+        updateOverrideMessage();
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 // Function to get the current settings on page load
 function getCurrentSettings() {
     fetch('/settings', {
@@ -54,5 +84,8 @@ function getCurrentSettings() {
     .catch(error => console.error('Error:', error));
 }
 
-// Call the getCurrentSettings function when the page loads
-document.addEventListener('DOMContentLoaded', getCurrentSettings);
+// Event listeners for page load and toggle override
+document.addEventListener('DOMContentLoaded', () => {
+    getCurrentSettings();
+    document.getElementById('overrideSchedule').addEventListener('change', toggleOverride);
+});

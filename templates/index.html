@@ -25,20 +25,22 @@
   </section>
   <section id="controls">
     <h2>Door Control</h2>
-    <p>Door is <span id="doorStatus">CLOSED</span></p>
+    <p>Chicken coop <span id="doorStatus">CLOSED</span></p>
     <button onclick="toggleDoor('open')">Open</button>
     <button onclick="toggleDoor('close')">Close</button>
     <div>
-      <label for="doorTime">Open door after:</label>
+      <label for="doorTime">Open door at:</label>
       <input type="time" id="doorTime">
-      <button onclick="setTimer()">Set Timer</button>
+      <label for="closeTime">Close door at:</label>
+      <input type="time" id="closeTime">
+      <button onclick="updateTimerSettings()">Set Timer</button>
     </div>
     <div>
-      <input type="radio" id="auto" name="mode" checked>
-      <label for="auto">Auto</label>
-      <input type="radio" id="manual" name="mode">
-      <label for="manual">Manual</label>
-      <button onclick="setMode()">Set Mode</button>
+      <label class="switch">
+      <input type="checkbox" id="overrideSchedule">
+      <span class="slider"></span>
+      </label>
+      <span id="overrideStatus">Override schedule</span>
     </div>
   </section>
 </div>

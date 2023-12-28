@@ -49,7 +49,7 @@ def save_config(config):
 def open_door():
     if GPIO_AVAILABLE:
         GPIO.output(door_pin, GPIO.LOW)  # Open the door
-        print("Door opened")
+        print("Door cpen")
     else:
         print("Simulated Door Opened (No GPIO operation)")
 
@@ -78,6 +78,7 @@ def run_schedule():
 
 # Start the scheduler thread
 scheduler_thread = Thread(target=run_schedule)
+scheduler_thread.daemon = True  # This ensures that the thread will close when the main program exits
 scheduler_thread.start()
 
 # Route for serving the index page
@@ -94,10 +95,10 @@ def control_door():
     
     if action == 'open':
         open_door()
-        response = {'status': 'Door opened'}
+        response = {'status': 'OPENED'}
     elif action == 'close':
         close_door()
-        response = {'status': 'Door closed'}
+        response = {'status': 'CLOSED'}
     elif action == 'override':
         manual_override = not manual_override
         response = {'status': 'Manual override toggled', 'override': manual_override}
@@ -105,6 +106,14 @@ def control_door():
         response = {'status': 'Invalid action'}
 
     return jsonify(response)
+
+@app.route('/override', methods=['POST'])
+def override_schedule():
+    global manual_override
+    data = request.json
+    manual_override = data.get('override', False)
+    # Handle the manual override logic here...
+    return jsonify({'status': 'Override status updated'})
 
 # Route for handling read and writing settings.
 @app.route('/settings', methods=['GET', 'POST'])
