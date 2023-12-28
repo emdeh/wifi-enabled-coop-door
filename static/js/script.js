@@ -1,9 +1,9 @@
 // Function to send a request to the server to toggle the door
 function toggleDoor(action) {
-    if (!isOverrideEnabled()) {
-        alert('Please confirm schedule override to manually open/close the door.');
+    if (!manualControl()) {
+        alert('Please enable Manual Control to manually open/close the door.');
         return;
-    }
+    }   
 
     fetch('/door', {
         method: 'POST',
@@ -17,9 +17,9 @@ function toggleDoor(action) {
     .catch(error => console.error('Error:', error));
 }
 
-// Function to check if override is enabled
-function isOverrideEnabled() {
-    return document.getElementById('overrideSchedule').checked;
+// Function to check if manualControl is enabled
+function manualControl() {
+    return document.getElementById('manualControl').checked;
 }
 
 // Function to update the timer settings
@@ -37,12 +37,12 @@ function updateTimerSettings() {
     .catch(error => console.error('Error:', error));
 }
 
-// Function to handle manual override switch
+// Function to handle manual switchs
 function toggleOverride() {
-    const isChecked = isOverrideEnabled();
+    const isChecked = manualControl();
     toggleDoorButtons(isChecked);
 
-    fetch('/override', {
+    fetch('/door', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ override: isChecked })
@@ -63,7 +63,7 @@ function getCurrentSettings() {
     .then(data => {
         document.getElementById('openTime').value = data.door.open_time;
         document.getElementById('closeTime').value = data.door.close_time;
-        const overrideSwitch = document.getElementById('overrideSchedule');
+        const overrideSwitch = document.getElementById('manualControl');
         overrideSwitch.checked = data.override;
         toggleOverride();
     })
@@ -74,10 +74,10 @@ function getCurrentSettings() {
 document.addEventListener('DOMContentLoaded', getCurrentSettings);
 
 // Get a reference to the checkbox element by its ID
-const overrideCheckbox = document.getElementById('overrideSchedule');
+const manualControlCheckbox = document.getElementById('manualControl');
 
 // Add an event listener to listen for changes in the checkbox's state
-overrideCheckbox.addEventListener('change', function () {
+manualControlCheckbox.addEventListener('change', function () {
     toggleOverride(); // Call the toggleOverride() function when the checkbox is changed
 });
 

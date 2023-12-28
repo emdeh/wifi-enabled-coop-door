@@ -89,14 +89,9 @@ def index():
 # Route for handling door control
 @app.route('/door', methods=['POST'])
 def control_door():
-    global manual_override
     data = request.json
     action = data.get('action')
-    
-    # Check if manual_override is enabled before proceeding
-    if not manual_override:
-        return jsonify({'status': 'Override not enabled, action not allowed'}), 403
-    
+
     if action == 'open':
         open_door()
         response = {'status': 'OPENED'}
@@ -106,29 +101,6 @@ def control_door():
     else:
         response = {'status': 'Invalid action'}
 
-    return jsonify(response)
-
-# Route for handling manual override toggle
-@app.route('/override', methods=['POST'])
-def toggle_override():
-    global manual_override
-    data = request.json
-    manual_override = data.get('override', False)
-    
-    # Logic to cancel scheduled jobs if manual_override is enabled
-    if manual_override:
-        schedule.clear()
-    
-    # Logic to set up scheduled jobs again
-    # Setup the initial schedule from the config file
-    config = load_config()
-    schedule.every().day.at(config['door']['open_time']).do(scheduled_open)
-    schedule.every().day.at(config['door']['close_time']).do(scheduled_close)
-    
-    response = {
-        'status': 'Override status updated',
-        'override': manual_override
-    }
     return jsonify(response)
 
 @app.route('/settings', methods=['GET', 'POST'])
