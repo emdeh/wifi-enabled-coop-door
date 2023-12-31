@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required
-from models import User, db # Make sure this import works correctly
+from flask_login import login_user, logout_user
+from .models import User, db
 
 auth = Blueprint('auth', __name__)
 
+# Route for serving login page
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -19,6 +20,7 @@ def login():
 
     return render_template('login.html')  # Ensure you have this template
 
+#Route for serving logout page
 @auth.route('/logout')
 @login_required
 def logout():

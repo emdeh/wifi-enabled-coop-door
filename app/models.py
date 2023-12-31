@@ -1,12 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
+from . import db
 from flask_login import UserMixin
-
-db = SQLAlchemy()
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(UserMixin, db.Model):
-    # UserMixin provides default implementations for methods that Flask-Login expects user objects to have.
-    
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(200))
@@ -17,4 +13,4 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-# You can add other models here as needed.
+# Define other models as needed
