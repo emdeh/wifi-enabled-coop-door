@@ -55,4 +55,7 @@
 
 # Next up
 
-- Need to fix triggers to when scheduled time passes, the door open functions are called.
+- Need to re-test basic functions (have not done since refactoring to be more modular)
+- Need to continue diagrams including TBC features
+- Need to write in TBC features to codebase
+- Need to start and maintain a proper README.MD
