@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
 import json
 import schedule
 import time
 from threading import Thread
 import os
+from models import db, User
+from flask_login import LoginManager, login_required
+from auth import auth as auth_blueprint
 
 def is_running_on_pi():
     """check if the app is running on a raspberry pi."""
@@ -25,6 +29,35 @@ else:
     GPIO_AVAILABLE = False
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'
+app.config['SECRET_KEY'] = 'your-secret-key'  # Needed for session management and security
+db.init_app(app)
+
+# After creating the Flask app instance
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'  # 'auth.login' is the endpoint for your login route
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+'''
+def create_user():
+    """Create a default user in the database."""
+    if not User.query.filter_by(username='mauruice').first():
+        user = User(username='maurice')
+        user.set_password('cluckcluck')
+        db.session.add(user)
+        db.session.commit()
+
+# Perform initial setup within the application context
+with app.app_context():
+    db.create_all()
+    create_user() # Call the function to create the user
+    # Any other one-time initialization code can go here
+'''
+# Blueprint registration
+app.register_blueprint(auth_blueprint)
 
 # GPIO setup
 door_pin = 23  # Change to your GPIO pin number
@@ -78,11 +111,13 @@ scheduler_thread.start()
 
 # Route for serving the index page
 @app.route('/')
+@login_required
 def index():
     return render_template('index.html')
 
 # Route for handling door control
 @app.route('/door', methods=['POST'])
+@login_required
 def control_door():
     data = request.json
     action = data.get('action')
@@ -99,6 +134,7 @@ def control_door():
     return jsonify(response)
 
 @app.route('/settings', methods=['GET', 'POST'])
+@login_required
 def settings():
     if request.method == 'POST':
         new_settings = request.json
